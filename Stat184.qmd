@@ -1,0 +1,174 @@
+---
+title: "Quarto_hw_akp6098"
+author: "Anisha Parida"
+format: html
+editor: visual
+---
+
+```{r}
+#| echo: false 
+#| warning: false
+
+
+library(ggplot2)
+library(dplyr)
+```
+
+```{r}
+#| echo: false
+
+myFunction <- function(x){
+  y <- (cos(4*x) + tan(0.5*x))^4
+  return(y)
+}
+
+ggplot() +
+  stat_function(
+    fun = myFunction,
+    xlim = c(0, 1),
+    n = 1000
+  ) +
+  theme_bw() +
+  labs(
+    x = "x",
+    y = "h(x)"
+  )
+```
+
+# Question 2
+
+```{r}
+library(ggplot2)
+data(diamonds)
+
+
+ggplot(data = diamonds, aes(x = carat, y = price, color = cut)) +
+geom_point(alpha = 0.3) +
+geom_smooth(method = "lm", se = FALSE, linetype = "dashed") +
+facet_wrap(~ clarity) +
+labs(
+title = "Influence of Carat, Cut, and Clarity on Diamond Price",
+x = "Carat (Weight)",
+y = "Price (USD)",
+color = "Cut Quality"
+) +
+theme_minimal() +
+theme(
+plot.title = element_text(hjust = 0.5),
+legend.position = "bottom"
+)
+```
+
+```{r}
+# read in the data file 
+tortilla_data <- read.csv("/Users/anishsparida/Downloads/tortilla_data.csv")
+
+# inspect data
+head(tortilla_data)
+
+
+```
+
+# Task A
+
+```{r}
+
+
+avg_price_2007 <- tortilla_data %>%
+  filter(year == 2007) %>%
+  summarize(avg_price = mean(price, na.rm = TRUE))
+
+avg_price_2007
+```
+
+# Task B
+
+```{r}
+avg_price_2024 <- tortilla_data %>%
+  filter(year == 2024) %>%
+  summarize(avg_price = mean(price, na.rm = TRUE))
+
+# 
+avg_price_2024
+```
+
+# Task C
+
+```{r}
+percent_change <- ((avg_price_2024$avg_price - avg_price_2007$avg_price) / avg_price_2007$avg_price) * 100
+
+percent_change
+```
+
+# Task D
+
+```{r}
+
+yearly_avg_prices <- tortilla_data %>%
+  group_by(year) %>%
+  summarize(avg_price = mean(price, na.rm = TRUE))
+
+
+ggplot(yearly_avg_prices, aes(x = year, y = avg_price)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "average tortilla price between 2007-24",
+    x = "year",
+    y = "average price"
+  )
+```
+
+# Task E
+
+```{r}
+stats_2016 <- tortilla_data %>%
+  filter(year == 2016) %>%
+  group_by(state) %>%
+  summarize(
+    avg_price = mean(price, na.rm = TRUE),
+    min_price = min(price, na.rm = TRUE),
+    max_price = max(price, na.rm = TRUE),
+    median_price = median(price, na.rm = TRUE),
+    sd_price = sd(price, na.rm = TRUE)
+  )
+
+
+stats_2016
+
+ggplot(tortilla_data %>% filter(year == 2016), aes(x = state, y = price)) +
+  geom_boxplot() +
+  labs(
+    title = "yearly tortilla prices (2016)",
+    caption = "source: tortilla_data.csv by Anisha Parida",
+    x = "State",
+    y = "Price"
+  )
+```
+
+# Task F
+
+```{r}
+nuevo_leon_data <- tortilla_data %>%
+  filter(state == "NuevoLeon")
+
+ggplot(nuevo_leon_data, aes(x = year, y = price, color = storeType)) +
+  geom_line() +
+  labs(
+    title = "Neuvo Leon tortilla prices by store type from 2007-2024",
+    caption = "Store type classified as small or large establishments",
+    x = "Year",
+    y = "Price"
+  )
+```
+
+# Task G
+
+![Meyer, Ali. "Homemade Corn Tortillas." Gimme Some Oven, 11 May 2020, www.gimmesomeoven.com/homemade-corn-tortillas/. Accessed 20 Nov. 2024.](Homemade-Corn-Tortillas-Recipe-9.png)
+
+# Task H
+
+Footnote [^1]
+
+[^1]:
+    1.  Rick Chavelas via Kaggle at https://www.kaggle.com/datasets/richave/tortilla-prices-in-mexico[↩︎](#fnref1)\
